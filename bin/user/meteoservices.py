@@ -93,10 +93,12 @@ class Meteoservices(weewx.restx.StdRESTbase):
         except KeyError as e:
             logerr("Data will not be posted: Missing option %s" % e)
             return
-        self.enable_driver = site_dict.get('enable', True)
+        self.enable_driver = to_bool(site_dict.get('enable', True))
         if not self.enable_driver:
             loginf('Driver disabled, skipping uploads')
             return
+        # Get rid of the no longer needed key 'enable':
+        site_dict.pop('enable', None)
         site_dict.setdefault('latitude', engine.stn_info.latitude_f)
         site_dict.setdefault('longitude', engine.stn_info.longitude_f)
         site_dict.setdefault('altitude', engine.stn_info.altitude_vt[0])
